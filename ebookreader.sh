@@ -22,6 +22,7 @@ PS2TXT="ps2txt"
 PDF2TXT="FIXME"
 EBPUB2TXT="epub2txt"
 GZIP2TXT="gunzip -c"
+RANDOMTMPFILE="234rqwer2342qrwer423tmp.txt"
 #Variables
 ESPEAKCOMMAND="/usr/bin/espeak" #you can add voices with -v <voice name>
 if test -f $ESPEAKCOMMAND; then
@@ -33,13 +34,17 @@ else
 fi
 
 FILEARG=$1
-if [ "$file" == "*.tgz" ] ||  [ "$file" == "*.tar.gz" ]; then
-    $GZIP2TXT $FILEARG > "tmp.txt"
-    FILENAME="tmp.txt"
+if [ $FILEARG == *\.gz ] || [ $FILEARG == *\.tgz ]; then
+    echo "found a gzip file"
+    $GZIP2TXT $FILEARG > $RANDOMTMPFILE
+    FILENAME=$RANDOMTMPFILE
+    trap 'rm $RANDOMTMPFILE; exit' INT
 else
     FILENAME=$1
 fi
-    
+
+#trap 'rm $RANDOMTMPFILE; exit' INT 
+
 BMEXT=".bookmark" #new file created with .bookmark appended to name
 if [ $# -eq 0 ]; then
     echo "Usage: " $0 ": FILE line-number"
@@ -83,3 +88,4 @@ do
     #overwrite.
 done
 
+rm $RANDOMTMPFILE # warning i hope you have no tmp.txt in this dir :)
