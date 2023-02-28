@@ -19,7 +19,7 @@
 #TODO: Converters, the object is to output to plain text file and read it.
 #this would of course require the converter be installed.
 PS2TXT="/usr/bin/ps2txt"
-PDF2TXT="FIXME"
+PDF2TXT="/usr/bin/pdf2txt" #python pdf miner
 EBPUB2TXT="/usr/bin/epub2txt"
 GZIP2TXT="gunzip -c"
 RANDOMTMPFILE="234rqwer2342qrwer423tmp.txt"
@@ -62,8 +62,21 @@ elif  [ $FILEARG == *\.epub ]; then
 	echo "try : https://github.com/kevinboone/epub2txt2"
         exit
     fi
-
+elif [ $FILEARG == *\.pdf ]; then
+#elif [ file $FILEARG | grep 
+    echo "found a PDF file"
+    if test -f $PDF2TXT; then
+        FOUNDPS=1
+        $PDF2TXT $FILEARG > $RANDOMTMPFILE
+        FILENAME=$RANDOMTMPFILE
+        trap 'rm $RANDOMTMPFILE; exit' INT
+    else
+        echo "error no pdf converter! exiting"
+        echo "try installing python-pdfminer, or bring your own converter"
+        exit
+    fi
 else
+    echo "DEBUG: assuming plain text file"
     FILENAME=$1
 fi
 
@@ -110,4 +123,4 @@ do
     #overwrite.
 done
 
-rm $RANDOMTMPFILE # warning i hope you have no tmp.txt in this dir :)
+#rm $RANDOMTMPFILE # warning i hope you have no tmp.txt in this dir :)
