@@ -25,15 +25,27 @@ GZIP2TXT="gunzip -c"
 #Variables
 ESPEAKCOMMAND="/usr/bin/espeak" #you can add voices with -v <voice name>
 if test -f $ESPEAKCOMMAND; then
-    echo "DEBUG espeak exists"
+    ESPEAKFOUND=1 #found espeak!
 else
     echo "DEBUG no espeak command, check your ESPEAK variable."
     echo "try whereis espeak, you may need to isntall (usually /usr/bin/espeak)"
     exit
 fi
 
-FILENAME=$1
+FILEARG=$1
+if [ "$file" == "*.tgz" ] ||  [ "$file" == "*.tar.gz" ]; then
+    $GZIP2TXT $FILEARG > "tmp.txt"
+    FILENAME="tmp.txt"
+else
+    FILENAME=$1
+fi
+    
 BMEXT=".bookmark" #new file created with .bookmark appended to name
+if [ $# -eq 0 ]; then
+    echo "Usage: " $0 ": FILE line-number"
+    exit
+fi
+
 if [ $# -eq 1 ]; then
    if test -f $FILENAME$BMEXT; then
        echo "DEBUG: no args, but found bookmark"
