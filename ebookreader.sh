@@ -18,9 +18,9 @@
 
 #TODO: Converters, the object is to output to plain text file and read it.
 #this would of course require the converter be installed.
-PS2TXT="ps2txt"
+PS2TXT="/usr/bin/ps2txt"
 PDF2TXT="FIXME"
-EBPUB2TXT="epub2txt"
+EBPUB2TXT="/usr/bin/epub2txt"
 GZIP2TXT="gunzip -c"
 RANDOMTMPFILE="234rqwer2342qrwer423tmp.txt"
 #Variables
@@ -39,11 +39,33 @@ if [ $FILEARG == *\.gz ] || [ $FILEARG == *\.tgz ]; then
     $GZIP2TXT $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
+elif  [ $FILEARG == *\.ps ]; then
+    echo "found a ps file"
+    if test -f $PS2TXT; then
+	FOUNDPS=1
+	$PS2TXT $FILEARG > $RANDOMTMPFILE
+	FILENAME=$RANDOMTMPFILE
+	trap 'rm $RANDOMTMPFILE; exit' INT
+    else
+	echo "error no ps converter! exiting"
+	exit
+    fi
+elif  [ $FILEARG == *\.epub ]; then
+    echo "found a epub file"
+    if test -f $EBPUB2TXT; then
+        FOUNDPS=1
+        $EBPUB2TXT $FILEARG > $RANDOMTMPFILE
+        FILENAME=$RANDOMTMPFILE
+        trap 'rm $RANDOMTMPFILE; exit' INT
+    else
+        echo "error no epub converter! exiting"
+	echo "try : https://github.com/kevinboone/epub2txt2"
+        exit
+    fi
+
 else
     FILENAME=$1
 fi
-
-#trap 'rm $RANDOMTMPFILE; exit' INT 
 
 BMEXT=".bookmark" #new file created with .bookmark appended to name
 if [ $# -eq 0 ]; then
