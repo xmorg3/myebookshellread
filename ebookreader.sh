@@ -23,7 +23,15 @@ PDF2TXT="FIXME"
 EBPUB2TXT="epub2txt"
 GZIP2TXT="gunzip -c"
 #Variables
-ESPEAKCOMMAND="espeak" #you can add voices with -v <voice name>
+ESPEAKCOMMAND="/usr/bin/espeak" #you can add voices with -v <voice name>
+if test -f $ESPEAKCOMMAND; then
+    echo "DEBUG espeak exists"
+else
+    echo "DEBUG no espeak command, check your ESPEAK variable."
+    echo "try whereis espeak, you may need to isntall (usually /usr/bin/espeak)"
+    exit
+fi
+
 FILENAME=$1
 BMEXT=".bookmark" #new file created with .bookmark appended to name
 if [ $# -eq 1 ]; then
