@@ -62,8 +62,9 @@ elif  [ $FILEARG == *\.epub ]; then
 	echo "try : https://github.com/kevinboone/epub2txt2"
         exit
     fi
-elif [ $FILEARG == *\.pdf ]; then
-#elif [ file $FILEARG | grep 
+#elif [ $FILEARG == *\.pdf ]; then
+#elif [ $(head -1 $FILEARG) == *"PDF"* ]; then 
+elif [ $(head -c 4 "$FILEARG") == "%PDF" ]; then
     echo "found a PDF file"
     if test -f $PDF2TXT; then
         FOUNDPS=1
