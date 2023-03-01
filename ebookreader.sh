@@ -18,13 +18,16 @@
 
 #TODO: Converters, the object is to output to plain text file and read it.
 #this would of course require the converter be installed.
-PS2TXT="/usr/bin/ps2txt"
+PS2TXT="/usr/bin/ps2txt" #ghostscript
 PDF2TXT="/usr/bin/pdf2txt" #python pdf miner
-EBPUB2TXT="/usr/bin/epub2txt"
-GZIP2TXT="gunzip -c"
+EBPUB2TXT="/usr/bin/epub2txt" #https://github.com/kevinboone/epub2txt2
+HTML2TXT="/usr/bin/html2text" #https://linux.die.net/man/1/html2text ? a package?
+#http://userpage.fu-berlin.de/~mbayer/tools/html2text.html
+GZIP2TXT="gunzip -c" #needs gunzip, part of most linux os distros
 RANDOMTMPFILE="234rqwer2342qrwer423tmp.txt"
 #Variables
 ESPEAKCOMMAND="/usr/bin/espeak" #you can add voices with -v <voice name>
+
 if test -f $ESPEAKCOMMAND; then
     ESPEAKFOUND=1 #found espeak!
 else
@@ -34,12 +37,14 @@ else
 fi
 
 FILEARG=$1
-if [ $FILEARG == *\.gz ] || [ $FILEARG == *\.tgz ]; then
+#echo "{"$FILEARG"}"
+
+if [ $FILEARG = *\.gz ]; then # || [ $FILEARG = *\.tgz ]; then
     echo "found a gzip file"
     $GZIP2TXT $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
-elif  [ $FILEARG == *\.ps ]; then
+elif [ $FILEARG = *\.ps ]; then
     echo "found a ps file"
     if test -f $PS2TXT; then
 	FOUNDPS=1
@@ -50,8 +55,8 @@ elif  [ $FILEARG == *\.ps ]; then
 	echo "error no ps converter! exiting"
 	exit
     fi
-elif  [ $FILEARG == *\.epub ]; then
-    echo "found a epub file"
+elif [ $FILEARG = *\.epub ]; then
+    echo "found an epub file"
     if test -f $EBPUB2TXT; then
         FOUNDPS=1
         $EBPUB2TXT $FILEARG > $RANDOMTMPFILE
@@ -62,9 +67,20 @@ elif  [ $FILEARG == *\.epub ]; then
 	echo "try : https://github.com/kevinboone/epub2txt2"
         exit
     fi
-#elif [ $FILEARG == *\.pdf ]; then
-#elif [ $(head -1 $FILEARG) == *"PDF"* ]; then 
-elif [ $(head -c 4 "$FILEARG") == "%PDF" ]; then
+    # test me vv 
+elif [ $FILEARG = *\.htm ] || [ $FILEARG = *\.html ]; then
+    echo "found an html file"
+    if test -f $HTML2TXT; then
+        FOUNDPS=1
+        $HTML2TXT $FILEARG > $RANDOMTMPFILE
+        FILENAME=$RANDOMTMPFILE
+        trap 'rm $RANDOMTMPFILE; exit' INT
+    else
+        echo "error no html converter! exiting"
+        echo "your distro might have a package for " $HTML2TXT
+        exit
+    fi
+elif [ $(head -c 4 "$FILEARG") = "%PDF" ]; then
     echo "found a PDF file"
     if test -f $PDF2TXT; then
         FOUNDPS=1
@@ -124,4 +140,4 @@ do
     #overwrite.
 done
 
-#rm $RANDOMTMPFILE # warning i hope you have no tmp.txt in this dir :)
+rm $RANDOMTMPFILE # warning i hope you have no tmp.txt in this dir :)
