@@ -21,6 +21,7 @@
 
 PS2TXT="/usr/bin/ps2txt" #ghostscript
 PDF2TXT="/usr/bin/pdf2txt" #python pdf miner
+PS2ASCII="/usr/bin/ps2ascii" #fallback if you have ghostscript.
 EBPUB2TXT="/usr/bin/epub2txt" #https://github.com/kevinboone/epub2txt2
 HTML2TXT="/usr/bin/html2text" #https://linux.die.net/man/1/html2text ? a package?
 #http://userpage.fu-berlin.de/~mbayer/tools/html2text.html
@@ -50,8 +51,12 @@ if [ $FILEARG = *\.gz ]; then # || [ $FILEARG = *\.tgz ]; then
     #elif [ $FILEARG = *\.ps ]; then
 elif [ $(head -c 4 $FILEARG) = "%!PS" ] ; then
     echo "found a ps file"
-    if test -f $PS2TXT; then
-	FOUNDPS=1
+    if test -f $PS2ASCII; then #PS2ASCII or PS2TXT
+	$PS2ASCII $FILEARG > $RANDOMTMPFILE
+        FILENAME=$RANDOMTMPFILE
+        trap 'rm $RANDOMTMPFILE; exit' INT
+    elif test -f $PS2TXT; then
+	#FOUNDPS=1
 	$PS2TXT $FILEARG > $RANDOMTMPFILE
 	FILENAME=$RANDOMTMPFILE
 	trap 'rm $RANDOMTMPFILE; exit' INT
