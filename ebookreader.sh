@@ -16,8 +16,9 @@
 #pipe output to espeak awk | espeak
 #print line numbers echo variable
 
-#TODO: Converters, the object is to output to plain text file and read it.
-#this would of course require the converter be installed.
+#TODO: bookmarking more than one "converted" book
+#will probably overwrite teh previous bookmark.
+
 PS2TXT="/usr/bin/ps2txt" #ghostscript
 PDF2TXT="/usr/bin/pdf2txt" #python pdf miner
 EBPUB2TXT="/usr/bin/epub2txt" #https://github.com/kevinboone/epub2txt2
@@ -37,14 +38,17 @@ else
 fi
 
 FILEARG=$1
-#echo "{"$FILEARG"}"
+
+echo $FILEARG " " $(head -c 4 $FILEARG)
+
 
 if [ $FILEARG = *\.gz ]; then # || [ $FILEARG = *\.tgz ]; then
     echo "found a gzip file"
     $GZIP2TXT $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
-elif [ $FILEARG = *\.ps ]; then
+    #elif [ $FILEARG = *\.ps ]; then
+elif [ $(head -c 4 $FILEARG) = "%!PS" ] ; then
     echo "found a ps file"
     if test -f $PS2TXT; then
 	FOUNDPS=1
@@ -103,10 +107,10 @@ if [ $# -eq 0 ]; then
     exit
 fi
 
-if [ $# -eq 1 ]; then
-   if test -f $FILENAME$BMEXT; then
+if [ $# -eq 1 ]; then #new code, trying to solve multi-converted
+   if test -f $FILEARG$BMEXT; then #bookmarks
        echo "DEBUG: no args, but found bookmark"
-       BOOKMARK=$(cat $FILENAME$BMEXT)
+       BOOKMARK=$(cat $FILEARG$BMEXT)
    else
        echo "DEBUG: no args or bookmark, starting form beginning"
        BOOKMARK=1
@@ -133,7 +137,7 @@ do
     awk -v BM=$i 'NR==BM' $FILENAME | $ESPEAKCOMMAND
     #debug creates a bookmark file which outputs the line number
     #last read.
-    echo $i > $FILENAME".bookmark" #protect your files!
+    echo $i > $FILEARG".bookmark" #protect your files!
     #The above statement  uses a ">" very close to your filename
     #and if it somehow overwrites
     #your files dont blame me! I have tested it and it *shouldnt*
