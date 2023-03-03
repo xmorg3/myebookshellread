@@ -91,8 +91,13 @@ elif [ $FILEARG = *\.htm ] || [ $FILEARG = *\.html ]; then
     fi
 elif [ $(head -c 4 "$FILEARG") = "%PDF" ]; then
     echo "found a PDF file"
-    if test -f $PDF2TXT; then
+    if test -f $PS2ASCII; then #PS2ASCII or PS2TXT
         FOUNDPS=1
+        $PS2ASCII $FILEARG > $RANDOMTMPFILE
+        FILENAME=$RANDOMTMPFILE
+        trap 'rm $RANDOMTMPFILE; exit' INT
+    elif test -f $PDF2TXT; then
+	FOUNDPS=1
         $PDF2TXT $FILEARG > $RANDOMTMPFILE
         FILENAME=$RANDOMTMPFILE
         trap 'rm $RANDOMTMPFILE; exit' INT
