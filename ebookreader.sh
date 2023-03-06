@@ -26,8 +26,11 @@ EBPUB2TXT="/usr/bin/epub2txt" #https://github.com/kevinboone/epub2txt2
 HTML2TXT="/usr/bin/html2text" #https://linux.die.net/man/1/html2text ? a package?
 #http://userpage.fu-berlin.de/~mbayer/tools/html2text.html
 GZIP2TXT="gunzip -c" #needs gunzip, part of most linux os distros
+BZIP2TXT="bunzip2 -c"
+XZ2TXT="unxz -c"
 RANDOMTMPFILE="234rqwer2342qrwer423tmp.txt"
 #Variables
+#ESPEAKCOMMAND="/usr/bin/flite"
 ESPEAKCOMMAND="/usr/bin/espeak" #you can add voices with -v <voice name>
 
 if test -f $ESPEAKCOMMAND; then
@@ -49,6 +52,16 @@ if [ $FILEARG = *\.gz ]; then # || [ $FILEARG = *\.tgz ]; then
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
     #elif [ $FILEARG = *\.ps ]; then
+elif [ $FILEARG = *\.bz2 ]; then # || [ $FILEARG = *\.tgz ]; then
+    echo "found a bzip2 file"
+    $BZIP2TXT $FILEARG > $RANDOMTMPFILE
+    FILENAME=$RANDOMTMPFILE
+    trap 'rm $RANDOMTMPFILE; exit' INT
+elif [ $FILEARG = *\.xz ]; then # || [ $FILEARG = *\.tgz ]; then
+    echo "found a xz file"
+    $XZ2TXT $FILEARG > $RANDOMTMPFILE
+    FILENAME=$RANDOMTMPFILE
+    trap 'rm $RANDOMTMPFILE; exit' INT
 elif [ $(head -c 4 $FILEARG) = "%!PS" ] ; then
     echo "found a ps file"
     if test -f $PS2ASCII; then #PS2ASCII or PS2TXT
