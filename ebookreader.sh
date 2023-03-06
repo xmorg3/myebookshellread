@@ -47,18 +47,25 @@ FILEARG=$1
 echo $FILEARG " " $(head -c 4 $FILEARG)
 
 
-if [ $FILEARG = *\.gz ]; then # || [ $FILEARG = *\.tgz ]; then
+if [[ $FILEARG =~ ".gz" ]]; then # || [ $FILEARG = *\.tgz ]; then
     echo "found a gzip file"
     $GZIP2TXT $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
     #elif [ $FILEARG = *\.ps ]; then
-elif [ $FILEARG = *\.bz2 ]; then # || [ $FILEARG = *\.tgz ]; then
+#elif [ $FILEARG = *\.1 ] || [ $FILEARG = *\.2 ] || [ $FILEARG = *\.ms ]; then # || [ $FILEARG = *\.tgz ]; then
+elif [[ $FILEARG =~ ".1" ]] || [[ $FILEARG =~ ".2" ]] || [[ $FILEARG =~ ".ms" ]]; then # || [ $FILEARG = *\.tgz ]; then
+    echo "found a groff/troff (groff_ms) file"
+    #$BZIP2TXT $FILEARG > $RANDOMTMPFILE
+    /usr/bin/groff -Tascii -ms  $FILEARG > $RANDOMTMPFILE
+    FILENAME=$RANDOMTMPFILE
+    trap 'rm $RANDOMTMPFILE; exit' INT
+elif [[ $FILEARG =~ ".bz2" ]]; then # || [ $FILEARG = *\.tgz ]; then
     echo "found a bzip2 file"
     $BZIP2TXT $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
-elif [ $FILEARG = *\.xz ]; then # || [ $FILEARG = *\.tgz ]; then
+elif [[ $FILEARG =~ ".xz" ]]; then # || [ $FILEARG = *\.tgz ]; then
     echo "found a xz file"
     $XZ2TXT $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
@@ -78,7 +85,7 @@ elif [ $(head -c 4 $FILEARG) = "%!PS" ] ; then
 	echo "error no ps converter! exiting"
 	exit
     fi
-elif [ $FILEARG = *\.epub ]; then
+elif [[ $FILEARG =~ ".epub" ]]; then
     echo "found an epub file"
     if test -f $EBPUB2TXT; then
         FOUNDPS=1
@@ -91,7 +98,7 @@ elif [ $FILEARG = *\.epub ]; then
         exit
     fi
     # test me vv
-elif [ $FILEARG = *\.odt ]; then
+elif [[ $FILEARG =~ ".odt" ]]; then
     echo "found an odt file"                                                                                                                                                                
     if test -f $ODT2TXT; then
         FOUNDODT=1
@@ -103,7 +110,7 @@ elif [ $FILEARG = *\.odt ]; then
         echo "try : https://github.com/kevinboone/epub2txt2"
         exit
     fi
-elif [ $FILEARG = *\.htm ] || [ $FILEARG = *\.html ]; then
+elif [[ $FILEARG =~ ".htm" ]] || [[ $FILEARG =~ ".html" ]]; then
     echo "found an html file"
     if test -f $HTML2TXT; then
         FOUNDPS=1
