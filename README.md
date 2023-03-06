@@ -30,7 +30,9 @@ replace espeak with any other tts which excepts pipe input.
 	epub2txt  see .epub below. may also be in your package manager
 	standard compresssion packages, gzip, bzip2, xz, if you compress
 	your plain text files.
-	
+	man       Reading man files.  Believe it or not there are some minimalist
+	          distros like postmarketos/pinphone that are like...oh? you want
+			  man pages with that?
 
 ## Formats supported
 	.txt           - good ole plain text, this is also the 
@@ -91,6 +93,8 @@ elif [ $FILEARG = *\.xz ];  then #if I find teh file ext
 	No such file or directory" - this can be ignord.  Since you are giving
 	the name of the man page as a filename argument, some tests fail, but
 	it still reads the man page.
+	
+	*ugly project name!* - we really need to rebrand ourselves at some point.
 
 ## Limitations:
 	* Without TERMCAP or curses, this script cannot accept interactive
