@@ -28,6 +28,7 @@ HTML2TXT="/usr/bin/html2text" #https://linux.die.net/man/1/html2text ? a package
 GZIP2TXT="/usr/bin/gunzip -c" #needs gunzip, part of most linux os distros
 BZIP2TXT="/usr/bin/bunzip2 -c"
 XZ2TXT="/usr/bin/unxz -c"
+DETEX="/usr/bin/detex" #install Latex suite
 ODT2TXT="/usr/bin/odt2txt" #install odt2txt, check your package manager?
 RANDOMTMPFILE="234rqwer2342qrwer423tmp.txt"
 #Variables
@@ -59,6 +60,12 @@ elif [[ $FILEARG =~ ".1" ]] || [[ $FILEARG =~ ".2" ]] || [[ $FILEARG =~ ".ms" ]]
     #$BZIP2TXT $FILEARG > $RANDOMTMPFILE
     #test for groff
     /usr/bin/groff -Tascii -ms  $FILEARG > $RANDOMTMPFILE
+    FILENAME=$RANDOMTMPFILE
+    trap 'rm $RANDOMTMPFILE; exit' INT
+elif [[ $FILEARG =~ ".tex" ]]; then
+    #TEST for detex
+    echo "Found LaTex file"
+    $DETEX $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
 elif [[ $FILEARG =~ ".bz2" ]]; then # || [ $FILEARG = *\.tgz ]; then

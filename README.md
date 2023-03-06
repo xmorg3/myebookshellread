@@ -16,12 +16,28 @@ requirements:
 	a shell - tested in bash, sh, yash, dash
 	sed     - most shells/distros have this
 	awk     - most shells/distros  have this
+optional depends:
+	additional file formats require external apps to convert
+	to plain text files.  most are present in most modern 
+	packages managers like debian, fedora or arch
+	groff   - for roff/man files
+	Latex   - only for detex 'ing documents
+	odt2txt - read openoffice files
+	ghostscript - for ps2ascii
+	pdf2txt - if you dont want to use ghostscript !warning poppler's
+	          converter doesnt work yet.  pdf2txt is python-based
+			  and required pdfminer.
+	epub2txt  see .epub below. may also be in your package manager
+	standard compresssion packages, gzip, bzip2, xz, if you compress
+	your plain text files.
+	
 
 Formats supported
-	.txt           - good ole plain text, this is also the fallback for any other file
+	.txt           - good ole plain text, this is also the 
+	                 fallback for any other file
 	                 extension be incountered.
-	.gz, .bz2, .xz - archives
-	.html          - saved web pages?
+	.gz, .bz2, .xz - compressed text.
+	.html          - saved web pages.
 	.epub          - ebook format, see https://github.com/kevinboone/epub2txt2"
 	.ps/pdf        - ghostscipt support is default
 	                 but you can also use other converters like pdf2txt (a python
@@ -29,10 +45,9 @@ Formats supported
 					 managers)  Currently this is the fallback for PDF's if 
 					 ghostscipt is not installed.
 	.odt           - open/libre office document/odt - need to install odt2txt
+	.tex           - LaTex format, install Latex suite.
+	.1,.2,.ms      - Groff/Troff format, currently -ms supported.
 
-Planned:
-	.tex            tex format.
-	.1, .2          groff/man format
 	
 How to add your own support.
 
