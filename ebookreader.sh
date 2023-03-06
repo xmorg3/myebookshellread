@@ -28,6 +28,7 @@ HTML2TXT="/usr/bin/html2text" #https://linux.die.net/man/1/html2text ? a package
 GZIP2TXT="gunzip -c" #needs gunzip, part of most linux os distros
 BZIP2TXT="bunzip2 -c"
 XZ2TXT="unxz -c"
+ODT2TXT="/usr/bin/odt2txt" #install odt2txt, check your package manager?
 RANDOMTMPFILE="234rqwer2342qrwer423tmp.txt"
 #Variables
 #ESPEAKCOMMAND="/usr/bin/flite"
@@ -89,7 +90,19 @@ elif [ $FILEARG = *\.epub ]; then
 	echo "try : https://github.com/kevinboone/epub2txt2"
         exit
     fi
-    # test me vv 
+    # test me vv
+elif [ $FILEARG = *\.odt ]; then
+    echo "found an odt file"                                                                                                                                                                
+    if test -f $ODT2TXT; then
+        FOUNDODT=1
+        $ODT2TXT $FILEARG > $RANDOMTMPFILE
+        FILENAME=$RANDOMTMPFILE
+        trap 'rm $RANDOMTMPFILE; exit' INT                                                                                                                                                   
+    else
+        echo "error no epub converter! exiting"
+        echo "try : https://github.com/kevinboone/epub2txt2"
+        exit
+    fi
 elif [ $FILEARG = *\.htm ] || [ $FILEARG = *\.html ]; then
     echo "found an html file"
     if test -f $HTML2TXT; then
