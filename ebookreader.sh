@@ -25,9 +25,9 @@ PS2ASCII="/usr/bin/ps2ascii" #fallback if you have ghostscript.
 EBPUB2TXT="/usr/bin/epub2txt" #https://github.com/kevinboone/epub2txt2
 HTML2TXT="/usr/bin/html2text" #https://linux.die.net/man/1/html2text ? a package?
 #http://userpage.fu-berlin.de/~mbayer/tools/html2text.html
-GZIP2TXT="gunzip -c" #needs gunzip, part of most linux os distros
-BZIP2TXT="bunzip2 -c"
-XZ2TXT="unxz -c"
+GZIP2TXT="/usr/bin/gunzip -c" #needs gunzip, part of most linux os distros
+BZIP2TXT="/usr/bin/bunzip2 -c"
+XZ2TXT="/usr/bin/unxz -c"
 ODT2TXT="/usr/bin/odt2txt" #install odt2txt, check your package manager?
 RANDOMTMPFILE="234rqwer2342qrwer423tmp.txt"
 #Variables
@@ -57,6 +57,7 @@ if [[ $FILEARG =~ ".gz" ]]; then # || [ $FILEARG = *\.tgz ]; then
 elif [[ $FILEARG =~ ".1" ]] || [[ $FILEARG =~ ".2" ]] || [[ $FILEARG =~ ".ms" ]]; then # || [ $FILEARG = *\.tgz ]; then
     echo "found a groff/troff (groff_ms) file"
     #$BZIP2TXT $FILEARG > $RANDOMTMPFILE
+    #test for groff
     /usr/bin/groff -Tascii -ms  $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT

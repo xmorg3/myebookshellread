@@ -28,7 +28,7 @@ Formats supported
 					 script using pdfminer, which *should* exist in most package
 					 managers)  Currently this is the fallback for PDF's if 
 					 ghostscipt is not installed.
-	.odt           - open/libre office document/odt
+	.odt           - open/libre office document/odt - need to install odt2txt
 
 Planned:
 	.tex            tex format.
