@@ -86,6 +86,11 @@ Issues:
 	especially when looking for man pages directly. you can get around this 
 	if you man page is already installed, by using the "man" argument, example 
 	"ebookreader.sh ls 1 man" reads the man page for ls, starting a line 1.
+	
+	*man pages* - you may get an error "head: cannot open 'grep' for reading: 
+	No such file or directory" - this can be ignord.  Since you are giving
+	the name of the man page as a filename argument, some tests fail, but
+	it still reads the man page.
 
 Limitations:
 	* Without TERMCAP or curses, this script cannot accept interactive
