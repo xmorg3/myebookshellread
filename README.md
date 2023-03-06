@@ -48,14 +48,14 @@ replace espeak with any other tts which excepts pipe input.
 	.tex           - LaTex format, install Latex suite.
 	.1,.2,.ms      - Groff/Troff format, currently -ms supported.
 
-*Usage:*
+## Usage:
 	ebookreader.sh FILENAME BOOKMARK man
 	if argument 2 is "man" - the script assumes you want to read a manpage
 	example: ebookreader.sh ls 1 man - will read the manpage for ls
 	         ebookreader.sh the_cat_andthe_hat.txt 23 - will read the book
 			 beginning at line 23.
 	
-How to add your own support.
+## How to add your own support.
 
 Add an entry into the bash script
 elif [ $FILEARG = *\.xz ];  then #if I find teh file ext
@@ -68,12 +68,12 @@ elif [ $FILEARG = *\.xz ];  then #if I find teh file ext
     trap 'rm $RANDOMTMPFILE; exit' INT  #on exit, remove the temp file.
 
 
-Usage: ebookreader.sh FILENAME LINENUMBER
+## Usage: ebookreader.sh FILENAME LINENUMBER
 	Line Number is optional.  If not supplied it will start at line 1
 	if a .bookmark file exists, it will start at the line in the file
 	if you specifiy your own line it will start there.
 
-Issues:
+## Issues:
 	* bookmarks in read only areas - say you try to read a man page aloud
 	ebookreader.sh /usr/share/man/el/man1/inkscape.1.gz
 	every line will output " Permission denied" because its trying to
@@ -92,7 +92,7 @@ Issues:
 	the name of the man page as a filename argument, some tests fail, but
 	it still reads the man page.
 
-Limitations:
+## Limitations:
 	* Without TERMCAP or curses, this script cannot accept interactive
 	input, like LEFT/RIGHT to go back.  I believe I could create a C
 	program with termbox, to emulate this script and add the key
