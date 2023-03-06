@@ -1,4 +1,4 @@
-#myebookshellread - a command line ebook reader shell script
+# myebookshellread - a command line ebook reader shell script
 
 This script is a dedicated to the creator of ebook-speaker
 Jos Lemmens / http://jlemmens.nl/ This Script takes no code
@@ -8,7 +8,7 @@ text file via a bookmark. it intends to be extreemly portable,
 only requring a shell, awk, seq, and espeak ideally you can
 replace espeak with any other tts which excepts pipe input.
 
-requirements:
+## requirements:
 	espeak  - for reading out loud, however could also use flite
 	          by changing the variable at teh top of the script
 			  from espeak to flite.  you could also bring your
@@ -16,7 +16,7 @@ requirements:
 	a shell - tested in bash, sh, yash, dash
 	sed     - most shells/distros have this
 	awk     - most shells/distros  have this
-optional depends:
+## optional depends:
 	additional file formats require external apps to convert
 	to plain text files.  most are present in most modern 
 	packages managers like debian, fedora or arch
@@ -32,7 +32,7 @@ optional depends:
 	your plain text files.
 	
 
-Formats supported
+## Formats supported
 	.txt           - good ole plain text, this is also the 
 	                 fallback for any other file
 	                 extension be incountered.
@@ -48,7 +48,7 @@ Formats supported
 	.tex           - LaTex format, install Latex suite.
 	.1,.2,.ms      - Groff/Troff format, currently -ms supported.
 
-Usage:
+*Usage:*
 	ebookreader.sh FILENAME BOOKMARK man
 	if argument 2 is "man" - the script assumes you want to read a manpage
 	example: ebookreader.sh ls 1 man - will read the manpage for ls

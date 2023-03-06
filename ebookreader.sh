@@ -60,8 +60,6 @@ elif [[ $FILEARG =~ ".gz" ]]; then # || [ $FILEARG = *\.tgz ]; then
     $GZIP2TXT $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
-    #elif [ $FILEARG = *\.ps ]; then
-#elif [ $FILEARG = *\.1 ] || [ $FILEARG = *\.2 ] || [ $FILEARG = *\.ms ]; then # || [ $FILEARG = *\.tgz ]; then
 elif [[ $FILEARG =~ ".1" ]] || [[ $FILEARG =~ ".2" ]] || [[ $FILEARG =~ ".ms" ]]; then # || [ $FILEARG = *\.tgz ]; then
     echo "found a groff/troff (groff_ms) file"
     #$BZIP2TXT $FILEARG > $RANDOMTMPFILE
