@@ -9,13 +9,13 @@ only requring a shell, awk, seq, and espeak ideally you can
 replace espeak with any other tts which excepts pipe input.
 
 requirements:
-	espeak - for reading out loud, however could also use flite
-	         by changing the variable at teh top of the script
-			 from espeak to flite.  you could also bring your
-			 own speach syth, if it accepts piped text.
-	a shell- tested in bash, sh, yash, dash
-	sed    - most shells/distros have this
-	awk    - most shells/distros  have this
+	espeak  - for reading out loud, however could also use flite
+	          by changing the variable at teh top of the script
+			  from espeak to flite.  you could also bring your
+			  own speach syth, if it accepts piped text.
+	a shell - tested in bash, sh, yash, dash
+	sed     - most shells/distros have this
+	awk     - most shells/distros  have this
 
 Formats supported
 	.txt           - good ole plain text, this is also the fallback for any other file
