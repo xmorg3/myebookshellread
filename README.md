@@ -48,6 +48,12 @@ Formats supported
 	.tex           - LaTex format, install Latex suite.
 	.1,.2,.ms      - Groff/Troff format, currently -ms supported.
 
+Usage:
+	ebookreader.sh FILENAME BOOKMARK man
+	if argument 2 is "man" - the script assumes you want to read a manpage
+	example: ebookreader.sh ls 1 man - will read the manpage for ls
+	         ebookreader.sh the_cat_andthe_hat.txt 23 - will read the book
+			 beginning at line 23.
 	
 How to add your own support.
 
@@ -66,7 +72,21 @@ Usage: ebookreader.sh FILENAME LINENUMBER
 	Line Number is optional.  If not supplied it will start at line 1
 	if a .bookmark file exists, it will start at the line in the file
 	if you specifiy your own line it will start there.
+
+Issues:
+	* bookmarks in read only areas - say you try to read a man page aloud
+	ebookreader.sh /usr/share/man/el/man1/inkscape.1.gz
+	every line will output " Permission denied" because its trying to
+	place a bookmark in the files directory and not a user directory.
 	
+	* gziped man pages - I only do one pass, and if I found gzip file, i assume
+	its gzip text - so you will probably get a lot of code mixed in with your
+    text if you read a man page directly from /usr/share/man. - this can 
+	probably be resolved later by making another pass on a compressed file, 
+	especially when looking for man pages directly. you can get around this 
+	if you man page is already installed, by using the "man" argument, example 
+	"ebookreader.sh ls 1 man" reads the man page for ls, starting a line 1.
+
 Limitations:
 	* Without TERMCAP or curses, this script cannot accept interactive
 	input, like LEFT/RIGHT to go back.  I believe I could create a C

@@ -25,7 +25,7 @@ PS2ASCII="/usr/bin/ps2ascii" #fallback if you have ghostscript.
 EBPUB2TXT="/usr/bin/epub2txt" #https://github.com/kevinboone/epub2txt2
 HTML2TXT="/usr/bin/html2text" #https://linux.die.net/man/1/html2text ? a package?
 #http://userpage.fu-berlin.de/~mbayer/tools/html2text.html
-GZIP2TXT="/usr/bin/gunzip -c" #needs gunzip, part of most linux os distros
+GZIP2TXT="/bin/gunzip -c" #needs gunzip, part of most linux os distros
 BZIP2TXT="/usr/bin/bunzip2 -c"
 XZ2TXT="/usr/bin/unxz -c"
 DETEX="/usr/bin/detex" #install Latex suite
@@ -43,12 +43,19 @@ else
     exit
 fi
 
-FILEARG=$1
+FILEARG=$1 #$2=bookmark $3man? man page
+
 
 echo $FILEARG " " $(head -c 4 $FILEARG)
 
-
-if [[ $FILEARG =~ ".gz" ]]; then # || [ $FILEARG = *\.tgz ]; then
+if [[ $# > 2 ]]; then #if [ $# -lt 3 ]; then #did you say man?
+    if [ $3 = "man" ]; then
+	#man page out, requires man!
+	man -Tascii $FILEARG > $RANDOMTMPFILE
+	FILENAME=$RANDOMTMPFILE
+	trap 'rm $RANDOMTMPFILE; exit' INT
+    fi
+elif [[ $FILEARG =~ ".gz" ]]; then # || [ $FILEARG = *\.tgz ]; then
     echo "found a gzip file"
     $GZIP2TXT $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
