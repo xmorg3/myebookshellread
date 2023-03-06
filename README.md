@@ -102,7 +102,7 @@ elif [ $FILEARG = *\.xz ];  then #if I find teh file ext
 	program with termbox, to emulate this script and add the key
 	interactions.
 
-	* REALLY LONG ebookss - i have noticed that it may take a few moments
+	* REALLY LONG ebooks - i have noticed that it may take a few moments
 	for a really long PDF to process all text to a tmp file in order
 	to read it.  This is because the script does conversion on the fly
 	so you may need to wait.  A more permanent solution would be to
