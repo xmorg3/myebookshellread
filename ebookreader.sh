@@ -6,7 +6,8 @@
 #only requring a shell, awk, seq, and espeak ideally you can
 #replace espeak with any other tts which excepts pipe input.
 
-#tested in bash, sh, yash, dash
+#tested in bash, sh, yash, dash - every attempt has been made
+#to avoid bash "shortcuts" so that more shells could be used.
 
 #limitations, its not curses, or termcap so it cant accept
 #keyboard interupts (yet), like going back, etc.
@@ -43,13 +44,29 @@ else
     exit
 fi
 
-FILEARG=$1 #$2=bookmark $3man? man page
+# clear extra args.
+if [ -z "$3" ]; then
+    echo "no arg 3"
+    $3="none"
+fi
+if [ -z "$2" ]; then
+    $2="none"
+fi
 
-
-echo $FILEARG " " $(head -c 4 $FILEARG)
+FILEARG=$1
+FILENOEXT=$(echo $FILEARG | awk -F. '{print $1}') #if converting to txt only.
+FILEEXT=$(echo $FILEARG | awk -F. '{print $NF}') #do it once.$(echo $FILEARG | awk -F. '{print $NF}')
+#possibly no RANDOMTMPFILE
+echo "DEBUG: Name "$FILENOEXT "Ext: "$FILEEXT
+#echo $FILEARG " " $(head -c 4 $FILEARG)
 
 #if test "$#" > 2; then
 #if [ $# > 2 ]; then #if [ $# -lt 3 ]; then #did you say man?
+if [ $3 = "nogroff" ]; then #dont use groff to convert, read asis
+    DOGROFF=0
+else  #groff is on, unless you say nogroff
+    DOGROFF=1
+fi
 if [ $3 = "man" ]; then
     #man page out, requires man!
     man -Tascii $FILEARG > $RANDOMTMPFILE
@@ -58,13 +75,12 @@ if [ $3 = "man" ]; then
     #fi
 #echo embed.org | awk -F. '{print $NF}'  #awk finds file ext of filename
     #elif [ $FILEARG =~ ".gz" ]; then # || [ $FILEARG = *\.tgz ]; then
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "gz" ]; then
+elif [ $FILEEXT = "gz" ]; then
     echo "found a gzip file"
     $GZIP2TXT $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "1" ] || [ $(echo $FILEARG | awk -F. '{print $NF}') = "2" ] || [ $(echo $FILEARG | awk -F. '{print $NF}') = "ms" ]; then
-#elif [[ $FILEARG =~ ".1" ]] || [[ $FILEARG =~ ".2" ]] || [[ $FILEARG =~ ".ms" ]]; then # || [ $FILEARG = *\.tgz ]; then
+elif [ $FILEEXT = "1" ] || [ $FILEEXT = "2" ] || [ $FILEEXT = "ms" ]; then
     echo "found a groff/troff (groff_ms) file"
     #$BZIP2TXT $FILEARG > $RANDOMTMPFILE
     #test for groff
@@ -72,26 +88,30 @@ elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "1" ] || [ $(echo $FILEARG | a
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
     #elif [[ $FILEARG =~ ".tex" ]]; then
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "tex" ]; then
+elif [ $FILEEXT = "me" ]; then
+     echo "found a groff/troff (groff_me) file"
+    #$BZIP2TXT $FILEARG > $RANDOMTMPFILE
+    #test for groff
+    /usr/bin/groff -Tascii -me  $FILEARG > $RANDOMTMPFILE
+    FILENAME=$RANDOMTMPFILE
+    trap 'rm $RANDOMTMPFILE; exit' INT
+elif [ $FILEEXT = "tex" ]; then
     #TEST for detex
     echo "Found LaTex file"
     $DETEX $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
-    #elif [[ $FILEARG =~ ".bz2" ]]; then # || [ $FILEARG = *\.tgz ]; then
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "bz2" ]; then
+elif [ $FILEEXT = "bz2" ]; then
     echo "found a bzip2 file"
     $BZIP2TXT $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "xz" ]; then
-#elif [[ $FILEARG =~ ".xz" ]]; then # || [ $FILEARG = *\.tgz ]; then
+elif [ $FILEEXT = "xz" ]; then
     echo "found a xz file"
     $XZ2TXT $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
-#elif [ $(head -c 4 $FILEARG) = "%!PS" ] ; then
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "ps" ]; then
+elif [ $FILEEXT = "ps" ]; then
     echo "found a ps file"
     if test -f $PS2ASCII; then #PS2ASCII or PS2TXT
 	$PS2ASCII $FILEARG > $RANDOMTMPFILE
@@ -106,8 +126,7 @@ elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "ps" ]; then
 	echo "error no ps converter! exiting"
 	exit
     fi
-    #elif [[ $FILEARG =~ ".epub" ]]; then
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "epub" ]; then
+elif [ $FILEEXT = "epub" ]; then
     echo "found an epub file"
     if test -f $EBPUB2TXT; then
         FOUNDPS=1
@@ -121,20 +140,19 @@ elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "epub" ]; then
     fi
     # test me vv
     #elif [[ $FILEARG =~ ".odt" ]]; then
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "odt" ]; then
+elif [ $FILEEXT = "odt" ]; then
     echo "found an odt file"                                                                                                                                                                
     if test -f $ODT2TXT; then
         FOUNDODT=1
         $ODT2TXT $FILEARG > $RANDOMTMPFILE
         FILENAME=$RANDOMTMPFILE
-        trap 'rm $RANDOMTMPFILE; exit' INT                                                                                                                                                   
+        trap 'rm $RANDOMTMPFILE; exit' INT
     else
         echo "error no epub converter! exiting"
         echo "try : https://github.com/kevinboone/epub2txt2"
         exit
     fi
-    #elif [[ $FILEARG =~ ".htm" ]] || [[ $FILEARG =~ ".html" ]]; then
-    elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "html" ] || [ $(echo $FILEARG | awk -F. '{print $NF}') = "htm" ]; then
+    elif [ $FILEEXT = "html" ] || [ $FILEEXT = "htm" ]; then
     echo "found an html file"
     if test -f $HTML2TXT; then
         FOUNDPS=1
@@ -147,7 +165,7 @@ elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "odt" ]; then
         exit
     fi
     #elif [ $(head -c 4 "$FILEARG") = "%PDF" ]; then
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "pdf" ]; then
+elif [ $FILEEXT = "pdf" ]; then
     echo "found a PDF file"
     if test -f $PS2ASCII; then #PS2ASCII or PS2TXT
         FOUNDPS=1
@@ -169,9 +187,22 @@ else
     FILENAME=$1
 fi
 
+#forget everything we just did! Just do it text.
+
+if [ $3 = "noconv" ]; then #dont use groff to convert, read asis
+    DOGROFF=0
+    #echo "DEBUG: turning off groff"
+    FILENAME=$1
+else  #groff is on, unless you say nogroff
+    DOGROFF=1
+fi
+
 BMEXT=".bookmark" #new file created with .bookmark appended to name
 if [ $# -eq 0 ]; then
-    echo "Usage: " $0 ": FILE line-number"
+    echo "Usage: " $0 ": FILE line-number [man/noconv]"
+    echo "               arg 3 is optional:"
+    echo "                 man as arg 3 looks up a man page"
+    echo "                 noconv ignores any processing"
     exit
 fi
 
@@ -192,8 +223,6 @@ FILESIZE=$(wc -l $FILENAME | awk '{print $1;}')
 echo "bookmark line:"$BOOKMARK"    Exit with C-c"
 echo "file lines:"$FILESIZE
 
-#for i in {$a..$z..1} #{(($BOOKMARK))..(($FILESIZE))}
-#seq $BOOKMARK $FILESIZE
 #OUTMARK=$BOOKMARK
 for i in $(seq $BOOKMARK $FILESIZE)
 do
