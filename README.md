@@ -50,8 +50,10 @@ replace espeak with any other tts which excepts pipe input.
 	.1,.2,.ms      - Groff/Troff format, currently -ms supported.
 
 ## Usage:
-	ebookreader.sh FILENAME BOOKMARK man
-	if argument 2 is "man" - the script assumes you want to read a manpage
+	ebookreader.sh FILENAME BOOKMARK man/noconv
+	if argument 3 is "man" - the script assumes you want to read a manpage
+	if argument 3 is noconv - the script skipps any conversion of 
+	PDF/PS/roff/etc and reads  the file as if it were a text file.
 	example: ebookreader.sh ls 1 man - will read the manpage for ls
 	         ebookreader.sh the_cat_andthe_hat.txt 23 - will read the book
 			 beginning at line 23.
