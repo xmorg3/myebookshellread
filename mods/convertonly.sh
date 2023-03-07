@@ -1,23 +1,7 @@
-#This script is a dedicated to the creator of ebook-speaker
-#Jos Lemmens / http://jlemmens.nl/ This Script takes no code
-#from the original but intends to provide quick and easy way
-#of outputing text to speach and saving the progress of a
-#text file via a bookmark. it intends to be extreemly portable,
-#only requring a shell, awk, seq, and espeak ideally you can
-#replace espeak with any other tts which excepts pipe input.
+#This script will only convert the file to plain text.
+#it will not read the file aloud, and is meant to be used
+#with other scripts and apps
 
-#tested in bash, sh, yash, dash
-
-#limitations, its not curses, or termcap so it cant accept
-#keyboard interupts (yet), like going back, etc.
-
-#count the lines / wc
-#output lines, one by one to stdout awk
-#pipe output to espeak awk | espeak
-#print line numbers echo variable
-
-#TODO: bookmarking more than one "converted" book
-#will probably overwrite teh previous bookmark.
 
 PS2TXT="/usr/bin/ps2txt" #ghostscript
 PDF2TXT="/usr/bin/pdf2txt" #python pdf miner
@@ -48,50 +32,42 @@ FILEARG=$1 #$2=bookmark $3man? man page
 
 echo $FILEARG " " $(head -c 4 $FILEARG)
 
-#if test "$#" > 2; then
-#if [ $# > 2 ]; then #if [ $# -lt 3 ]; then #did you say man?
-if [ $3 = "man" ]; then
-    #man page out, requires man!
-    man -Tascii $FILEARG > $RANDOMTMPFILE
-    FILENAME=$RANDOMTMPFILE
-    trap 'rm $RANDOMTMPFILE; exit' INT
-    #fi
-#echo embed.org | awk -F. '{print $NF}'  #awk finds file ext of filename
-    #elif [ $FILEARG =~ ".gz" ]; then # || [ $FILEARG = *\.tgz ]; then
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "gz" ]; then
+if [[ $# > 2 ]]; then #if [ $# -lt 3 ]; then #did you say man?
+    if [ $3 = "man" ]; then
+	#man page out, requires man!
+	man -Tascii $FILEARG > $RANDOMTMPFILE
+	FILENAME=$RANDOMTMPFILE
+	trap 'rm $RANDOMTMPFILE; exit' INT
+    fi
+elif [[ $FILEARG =~ ".gz" ]]; then # || [ $FILEARG = *\.tgz ]; then
     echo "found a gzip file"
     $GZIP2TXT $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "1" ] || [ $(echo $FILEARG | awk -F. '{print $NF}') = "2" ] || [ $(echo $FILEARG | awk -F. '{print $NF}') = "ms" ]; then
-#elif [[ $FILEARG =~ ".1" ]] || [[ $FILEARG =~ ".2" ]] || [[ $FILEARG =~ ".ms" ]]; then # || [ $FILEARG = *\.tgz ]; then
+elif [[ $FILEARG =~ ".1" ]] || [[ $FILEARG =~ ".2" ]] || [[ $FILEARG =~ ".ms" ]]; then # || [ $FILEARG = *\.tgz ]; then
     echo "found a groff/troff (groff_ms) file"
     #$BZIP2TXT $FILEARG > $RANDOMTMPFILE
     #test for groff
     /usr/bin/groff -Tascii -ms  $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
-    #elif [[ $FILEARG =~ ".tex" ]]; then
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "tex" ]; then
+elif [[ $FILEARG =~ ".tex" ]]; then
     #TEST for detex
     echo "Found LaTex file"
     $DETEX $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
-    #elif [[ $FILEARG =~ ".bz2" ]]; then # || [ $FILEARG = *\.tgz ]; then
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "bz2" ]; then
+elif [[ $FILEARG =~ ".bz2" ]]; then # || [ $FILEARG = *\.tgz ]; then
     echo "found a bzip2 file"
     $BZIP2TXT $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "xz" ]; then
-#elif [[ $FILEARG =~ ".xz" ]]; then # || [ $FILEARG = *\.tgz ]; then
+elif [[ $FILEARG =~ ".xz" ]]; then # || [ $FILEARG = *\.tgz ]; then
     echo "found a xz file"
     $XZ2TXT $FILEARG > $RANDOMTMPFILE
     FILENAME=$RANDOMTMPFILE
     trap 'rm $RANDOMTMPFILE; exit' INT
-#elif [ $(head -c 4 $FILEARG) = "%!PS" ] ; then
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "ps" ]; then
+elif [ $(head -c 4 $FILEARG) = "%!PS" ] ; then
     echo "found a ps file"
     if test -f $PS2ASCII; then #PS2ASCII or PS2TXT
 	$PS2ASCII $FILEARG > $RANDOMTMPFILE
@@ -106,8 +82,7 @@ elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "ps" ]; then
 	echo "error no ps converter! exiting"
 	exit
     fi
-    #elif [[ $FILEARG =~ ".epub" ]]; then
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "epub" ]; then
+elif [[ $FILEARG =~ ".epub" ]]; then
     echo "found an epub file"
     if test -f $EBPUB2TXT; then
         FOUNDPS=1
@@ -120,8 +95,7 @@ elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "epub" ]; then
         exit
     fi
     # test me vv
-    #elif [[ $FILEARG =~ ".odt" ]]; then
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "odt" ]; then
+elif [[ $FILEARG =~ ".odt" ]]; then
     echo "found an odt file"                                                                                                                                                                
     if test -f $ODT2TXT; then
         FOUNDODT=1
@@ -133,8 +107,7 @@ elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "odt" ]; then
         echo "try : https://github.com/kevinboone/epub2txt2"
         exit
     fi
-    #elif [[ $FILEARG =~ ".htm" ]] || [[ $FILEARG =~ ".html" ]]; then
-    elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "html" ] || [ $(echo $FILEARG | awk -F. '{print $NF}') = "htm" ]; then
+elif [[ $FILEARG =~ ".htm" ]] || [[ $FILEARG =~ ".html" ]]; then
     echo "found an html file"
     if test -f $HTML2TXT; then
         FOUNDPS=1
@@ -146,8 +119,7 @@ elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "odt" ]; then
         echo "your distro might have a package for " $HTML2TXT
         exit
     fi
-    #elif [ $(head -c 4 "$FILEARG") = "%PDF" ]; then
-elif [ $(echo $FILEARG | awk -F. '{print $NF}') = "pdf" ]; then
+elif [ $(head -c 4 "$FILEARG") = "%PDF" ]; then
     echo "found a PDF file"
     if test -f $PS2ASCII; then #PS2ASCII or PS2TXT
         FOUNDPS=1
@@ -195,21 +167,13 @@ echo "file lines:"$FILESIZE
 #for i in {$a..$z..1} #{(($BOOKMARK))..(($FILESIZE))}
 #seq $BOOKMARK $FILESIZE
 #OUTMARK=$BOOKMARK
-for i in $(seq $BOOKMARK $FILESIZE)
-do
-    #read -rsn1 -t 0.01 input  #nonfucntional
-    #if [ "$input" = "h" ]; then
-    #    $i=$i-1
-    #fi
-    echo $i $(awk -v BM=$i 'NR==BM' $FILENAME)
-    awk -v BM=$i 'NR==BM' $FILENAME | $ESPEAKCOMMAND
-    #debug creates a bookmark file which outputs the line number
-    #last read.
-    echo $i > $FILEARG".bookmark" #protect your files!
-    #The above statement  uses a ">" very close to your filename
-    #and if it somehow overwrites
-    #your files dont blame me! I have tested it and it *shouldnt*
-    #overwrite.
-done
+#for i in $(seq $BOOKMARK $FILESIZE)
+#do
+#?? strip FILEARG's extention?
+cp $FILENAME $FILEARG".txt"
+#echo $i $(awk -v BM=$BOOKMARK 'NR==BM' $FILENAME)
+#awk -v BM=$BOOKMARK 'NR==BM' $FILENAME | $ESPEAKCOMMAND
+#echo $i > $FILEARG".bookmark" #protect your files!
 
+#dont remove the temp file? or dont keep creating teh file every line?
 rm $RANDOMTMPFILE # warning i hope you have no tmp.txt in this dir :)

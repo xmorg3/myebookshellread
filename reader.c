@@ -18,13 +18,17 @@
 void print_tb(const char*str, int x, int y, uint16_t fg, uint16_t bg);
 int draw_win();
 void draw_ui();
+/*set everything up, converting if needed*/
+int init_reader(char *filename, char *filearg, int bookmark, int manpage);
+
+/*drawing text to the screen*/
 int draw_title(char *filename, char *filearg, int bookmark, int manpage);
 
-enum {
-  TITLE,
-  GAME
-};
 
+int init_reader(char *filename, char *filearg, int bookmark, int manpage)
+{
+  /* run a conversion filename should = the text file result*/ 
+}
 
 //print out text
 void print_tb(const char *str, int x, int y, uint16_t fg, uint16_t bg)
