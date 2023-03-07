@@ -14,7 +14,6 @@ replace espeak with any other tts which excepts pipe input.
 			  from espeak to flite.  you could also bring your
 			  own speach syth, if it accepts piped text.
 	a shell - tested in bash, sh, yash, dash
-	sed     - most shells/distros have this
 	awk     - most shells/distros  have this
 ## optional depends:
 	additional file formats require external apps to convert
