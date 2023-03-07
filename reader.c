@@ -18,23 +18,14 @@
 void print_tb(const char*str, int x, int y, uint16_t fg, uint16_t bg);
 int draw_win();
 void draw_ui();
-int draw_title();
+int draw_title(char *filename, char *filearg, int bookmark, int manpage);
 
 enum {
   TITLE,
   GAME
 };
 
-typedef struct ACTOR{
-  int x;
-  int y;
-  int z;
-  char name[25] = "player";
-} Actor;
 
-
-
-Actor player;
 //print out text
 void print_tb(const char *str, int x, int y, uint16_t fg, uint16_t bg)
 {
@@ -45,42 +36,31 @@ void print_tb(const char *str, int x, int y, uint16_t fg, uint16_t bg)
     x++;
   }
 }
-int draw_title() {
+int draw_title(char *filename, char *filearg, int bookmark, int manpage) {
   int x = 3;
   int y = 3;
   tb_clear();
-  print_tb("The name of the game!",   x+1,y+1, TB_WHITE, TB_DEFAULT);
-  print_tb("n)ew game",               x+1,y+2, TB_WHITE, TB_DEFAULT);
-  print_tb("c)ontinue existing game", x+1,y+3, TB_WHITE, TB_DEFAULT);
-  print_tb("o)ptions",                x+1,y+4, TB_WHITE, TB_DEFAULT);
-  print_tb("q)uit",                   x+1,y+5, TB_WHITE, TB_DEFAULT);
+  print_tb("eBook reader - in dev.",   2,1, TB_WHITE, TB_DEFAULT);
+  print_tb("------------------------------------------", 2,2, TB_WHITE, TB_DEFAULT);
+
+  /*print_tb("%s", the string we awked*/
+  print_tb("q to exit", 2, 15, TB_WHITE, TB_DEFAULT);
   tb_present();
 }
-int draw_win(Actor *p) {
+int draw_win() {
   tb_clear();
   for(int v=0; v<20;v++){
     tb_set_cell(v,0,SBLOCK,TB_WHITE,TB_DEFAULT);
     tb_set_cell(0,v,SBLOCK,TB_WHITE,TB_DEFAULT);
   }
   
-  for(int y = 0; y < 20; y++) {
-    for(int x = 0; x < 20; x++) {
-      //if(y == 10 && x == 10) {
-      if(y == p->y && x == p->x) {
-	tb_set_cell(x+1,y+1,'@', TB_MAGENTA, TB_DEFAULT);
-      }
-      else {
-	tb_set_cell(x+1,y+1,'.', TB_WHITE, TB_DEFAULT);
-      }
-    }
-  }
   //tb_set_cell(0,0,'a', TB_WHITE, TB_DEFAULT);
   draw_ui();
   tb_present();
 }
 
 void draw_ui() {
-  print_tb("Contrl+q to exit", 25, 3, TB_WHITE, TB_DEFAULT);
+  print_tb("q to exit", 25, 3, TB_WHITE, TB_DEFAULT);
   print_tb("player x:", 25, 13, TB_WHITE, TB_DEFAULT);
   
   print_tb("player y:", 25, 23, TB_WHITE, TB_DEFAULT);
@@ -88,26 +68,42 @@ void draw_ui() {
 }
 
 //main function
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
-  /*static struct Actor player;*/
-  Actor *pl = &player;
-  pl->x = 10; pl->y = 10; pl->z = 0;
-  strcpy(player.name, "player");
-  (void) argc; (void) argv;
-  printf("testing hello world game\n");
+  /*
+    gcc -o myprog myprog.c
+    would result in the following values internal to GCC:
+    argc :     4
+    argv[0] :     gcc
+    argv[1] :     -o
+    argv[2] :     myprog
+    argv[3] :     myprog.c
+   */
+  if(argc > 1) {
+    char *filearg = argv[1];
+  } else {
+    char *filearg = "nofile";
+    /*display usage*/
+  }
+  if(argc > 2) {
+    int bookmark = atoi(argv[2]);
+  } else {int bookmark = 0;} //assuming bookmark; 0 if not an int
+  if(argc > 3) {
+    int manpage = 1;
+  } else {int manpage = 0;}
+  
   int ret;
   ret = tb_init();
   if(ret) {
-    fprintf(stderr, "tb_init() failed with error code %d\n",
-	    ret);
+    fprintf(stderr, "tb_init() failed with error code %d\n", ret);
     return 1;
   }
   tb_set_input_mode( TB_INPUT_ESC | TB_INPUT_MOUSE );
   struct tb_event ev;
-  draw_title();
+  /*draw_title();*/
     
   while(tb_poll_event(&ev) == TB_OK) {
+    draw_title(filearg, bookmark, manpage);
     switch(ev.type) {
     case TB_EVENT_KEY:
       printf("%c %d\n", ev.key, ev.key);
@@ -116,12 +112,10 @@ int main(int argc, char **argv)
 	return 0;
 	break;
       }
-      else if(ev.key == TB_KEY_ARROW_UP) {pl->y--;}
-      else if(ev.key == TB_KEY_ARROW_DOWN) {pl->y++;}
-      else if(ev.key == TB_KEY_ARROW_RIGHT) {pl->x++;}
-      else if(ev.key == TB_KEY_ARROW_LEFT) {pl->y++;}
-      else if(ev.ch == 'n') {
-	draw_win(pl);
+      else if(ev.ch == 'q') {
+	tb_shutdown();
+        return 0;
+        break;
       }
       break;
     }
