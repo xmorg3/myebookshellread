@@ -34,6 +34,7 @@ ODT2TXT="/usr/bin/odt2txt" #install odt2txt, check your package manager?
 RANDOMTMPFILE="234rqwer2342qrwer423tmp.txt"
 #Variables
 #ESPEAKCOMMAND="/usr/bin/flite"
+#ESPEAKCOMMAND="/usr/bin/espeak-ng" #the new one.
 ESPEAKCOMMAND="/usr/bin/espeak" #you can add voices with -v <voice name>
 
 if test -f $ESPEAKCOMMAND; then
