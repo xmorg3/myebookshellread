@@ -222,6 +222,7 @@ fi
 FILESIZE=$(wc -l $FILENAME | awk '{print $1;}')
 
 echo "bookmark line:"$BOOKMARK"    Exit with C-c"
+#percent=$((100*$item/$total))
 echo "file lines:"$FILESIZE
 
 #OUTMARK=$BOOKMARK
@@ -231,7 +232,8 @@ do
     #if [ "$input" = "h" ]; then
     #    $i=$i-1
     #fi
-    echo $i $(awk -v BM=$i 'NR==BM' $FILENAME)
+    PC=$((100*$i/$FILESIZE))
+    echo $i "("$PC"%)" $(awk -v BM=$i 'NR==BM' $FILENAME)
     awk -v BM=$i 'NR==BM' $FILENAME | $ESPEAKCOMMAND
     #debug creates a bookmark file which outputs the line number
     #last read.
