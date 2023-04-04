@@ -35,9 +35,9 @@ RANDOMTMPFILE="234rqwer2342qrwer423tmp.txt"
 #Variables
 #ESPEAKCOMMAND="/usr/bin/flite"
 #ESPEAKCOMMAND="/usr/bin/espeak-ng" #the new one.
-ESPEAKCOMMAND="/usr/bin/espeak" #you can add voices with -v <voice name>
+ESPEAKCOMMAND="/usr/bin/espeak -v f4 -p85" #you can add voices with -v <voiced name>
 
-if test -f $ESPEAKCOMMAND; then
+if test -f $(echo $ESPEAKCOMMAND | awk '{print $1; }'); then
     ESPEAKFOUND=1 #found espeak!
 else
     echo "DEBUG no espeak command, check your ESPEAK variable."
