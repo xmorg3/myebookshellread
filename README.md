@@ -106,6 +106,12 @@ elif [ $FILEARG = *\.xz ];  then #if I find teh file ext
 	of its use.  so i would ps2acii war_and_peace.pdf > warandpeace.txt
 	then read the text file.  However, the book would have to be EXTREEMLY
 	long.  Bible sized books are no problem.
+	
+## Alternates:
+Foliate - pretty, and has a option in settings for reading aloud.  can also do double pages
+ebook-speaker - dev stopped, (see below)
+FBReader - some versions have a TTS plugin, good luck on linux
+Calibre  - large, full featured, and *Finally* added tts.
 
 This script is a dedicated to the creator of ebook-speaker
 Jos Lemmens / http://jlemmens.nl/ This Script takes no code
