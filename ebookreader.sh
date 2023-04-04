@@ -35,9 +35,10 @@ RANDOMTMPFILE="234rqwer2342qrwer423tmp.txt"
 #Variables
 #ESPEAKCOMMAND="/usr/bin/flite"
 #ESPEAKCOMMAND="/usr/bin/espeak-ng" #the new one.
-ESPEAKCOMMAND="/usr/bin/espeak -v f4 -p85" #you can add voices with -v <voiced name>
+ESPEAKCOMMAND="/usr/bin/espeak -v f4 -p85" #you can add voices with -v <voiced name> 
 
 if test -f $(echo $ESPEAKCOMMAND | awk '{print $1; }'); then
+    #ignore command line arguments
     ESPEAKFOUND=1 #found espeak!
 else
     echo "DEBUG no espeak command, check your ESPEAK variable."
@@ -234,14 +235,10 @@ do
     #fi
     PC=$((100*$i/$FILESIZE))
     echo $i "("$PC"%)" $(awk -v BM=$i 'NR==BM' $FILENAME)
+    #if you have a "failed to read" error here, check your ESPEAKCOMMAND
+    #for bad arguments.
     awk -v BM=$i 'NR==BM' $FILENAME | $ESPEAKCOMMAND
-    #debug creates a bookmark file which outputs the line number
-    #last read.
     echo $i > $FILEARG".bookmark" #protect your files!
-    #The above statement  uses a ">" very close to your filename
-    #and if it somehow overwrites
-    #your files dont blame me! I have tested it and it *shouldnt*
-    #overwrite.
 done
 
 rm $RANDOMTMPFILE # warning i hope you have no tmp.txt in this dir :)
