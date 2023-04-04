@@ -35,6 +35,8 @@ RANDOMTMPFILE="234rqwer2342qrwer423tmp.txt"
 #Variables
 #ESPEAKCOMMAND="/usr/bin/flite"
 #ESPEAKCOMMAND="/usr/bin/espeak-ng" #the new one.
+#ESPEAKCOMMAND="/data/data/com.termux/files/usr/bin/espeak"
+#^^ Android? do whereis espeak if this doesnt work in termux
 ESPEAKCOMMAND="/usr/bin/espeak -v f4 -p85" #you can add voices with -v <voiced name> 
 
 if test -f $(echo $ESPEAKCOMMAND | awk '{print $1; }'); then
