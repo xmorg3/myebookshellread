@@ -1,12 +1,7 @@
 # myebookshellread - a command line ebook reader shell script
 
-This script is a dedicated to the creator of ebook-speaker
-Jos Lemmens / http://jlemmens.nl/ This Script takes no code
-from the original but intends to provide quick and easy way
-of outputing text to speach and saving the progress of a
-text file via a bookmark. it intends to be extreemly portable,
-only requring a shell, awk, seq, and espeak ideally you can
-replace espeak with any other tts which excepts pipe input.
+An very lightweight (just a shell script) ebook reader with that can
+use either espeak, espeak-ng, or flite TTS.
 
 ## requirements:
 	espeak  - for reading out loud, however could also use flite
@@ -107,6 +102,15 @@ elif [ $FILEARG = *\.xz ];  then #if I find teh file ext
 	for a really long PDF to process all text to a tmp file in order
 	to read it.  This is because the script does conversion on the fly
 	so you may need to wait.  A more permanent solution would be to
-	conver the file once, and keep it in txt format for the duration
+	convert the file once, and keep it in txt format for the duration
 	of its use.  so i would ps2acii war_and_peace.pdf > warandpeace.txt
-	then read the text file.
+	then read the text file.  However, the book would have to be EXTREEMLY
+	long.  Bible sized books are no problem.
+
+This script is a dedicated to the creator of ebook-speaker
+Jos Lemmens / http://jlemmens.nl/ This Script takes no code
+from the original but intends to provide quick and easy way
+of outputing text to speach and saving the progress of a
+text file via a bookmark. it intends to be extreemly portable,
+only requring a shell, awk, seq, and espeak ideally you can
+replace espeak with any other tts which excepts pipe input.
