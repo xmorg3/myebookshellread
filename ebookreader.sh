@@ -27,7 +27,7 @@ EBPUB2TXT="/usr/bin/epub2txt" #https://github.com/kevinboone/epub2txt2
 HTML2TXT="/usr/bin/html2text" #https://linux.die.net/man/1/html2text ? a package?
 #http://userpage.fu-berlin.de/~mbayer/tools/html2text.html
 GZIP2TXT="/bin/gunzip -c" #needs gunzip, part of most linux os distros
-BZIP2TXT="/usr/bin/bunzip2 -c"
+BZIP2TXT="/bin/bunzip2 -c"
 XZ2TXT="/usr/bin/unxz -c"
 DETEX="/usr/bin/detex" #install Latex suite
 ODT2TXT="/usr/bin/odt2txt" #install odt2txt, check your package manager?
