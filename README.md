@@ -65,12 +65,6 @@ elif [ $FILEARG = *\.xz ];  then #if I find teh file ext
     FILENAME=$RANDOMTMPFILE  #FILENAME will be used further down in the script
     trap 'rm $RANDOMTMPFILE; exit' INT  #on exit, remove the temp file.
 
-
-## Usage: ebookreader.sh FILENAME LINENUMBER
-	Line Number is optional.  If not supplied it will start at line 1
-	if a .bookmark file exists, it will start at the line in the file
-	if you specifiy your own line it will start there.
-
 ## Issues:
 	* bookmarks in read only areas - say you try to read a man page aloud
 	ebookreader.sh /usr/share/man/el/man1/inkscape.1.gz
